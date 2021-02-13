@@ -3,9 +3,25 @@
 #include <stdlib.h>
 
 void draw_matrix(int ** matrix, int rows, int cols){
+	int col_widths[cols];
 	for (int i=0;i<rows;i++){
 		for (int o=0;o<cols;o++){
-			printf("%d ",matrix[i][o]);
+			col_widths[o]=0;
+			char str_value[10];
+			sprintf(str_value, "%d", matrix[i][o]);
+			if (strlen(str_value)>col_widths[o]){
+				col_widths[o]=(int)strlen(str_value);
+			}
+		}
+	}	
+	for (int i=0;i<rows;i++){
+		for (int o=0;o<cols;o++){
+			char str_value[10];
+			sprintf(str_value, "%d", matrix[i][o]);
+			printf("%d",matrix[i][o]);
+			for (int n=-1;n<col_widths[o]-(int)strlen(str_value);n++){
+				printf(" ");
+			}
 		}
 		printf("\n");
 	}
