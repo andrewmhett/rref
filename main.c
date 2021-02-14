@@ -17,7 +17,7 @@ void draw_matrix(float ** matrix, int rows, int cols){
 				col_label='z';
 				break;
 			default:
-				col_label=(97+(o-2)%26);
+				col_label=97+(o-2);
 				break;
 		}
 		printf("%-*c",7,col_label);
@@ -29,7 +29,7 @@ void draw_matrix(float ** matrix, int rows, int cols){
 			if ((int)(100*matrix[i][o]) == 0){
 				printf("0      ");
 			}else{
-				printf("%-*.2f",7,matrix[i][o]);
+				printf("%-*.2G",7,matrix[i][o]);
 			}
 		}
 		printf("\n");
@@ -63,7 +63,11 @@ void rref_matrix(float ** matrix, int rows, int cols){
 		for (int z=0;z<rows;z++){
 			if (z != i){
 				if (matrix[z][i] != 0){
-					printf("R%d - %.2f * R%d\n", z+1, matrix[z][i], i+1);
+					if (matrix[z][i]<0){
+						printf("R%d + %.2f * R%d\n", z+1, -1*matrix[z][i], i+1);
+					}else{
+						printf("R%d - %.2f * R%d\n", z+1, matrix[z][i], i+1);
+					}
 					float buffer[cols];
 					for (int o=0;o<cols;o++){
 						buffer[o] = matrix[z][o];
@@ -75,6 +79,51 @@ void rref_matrix(float ** matrix, int rows, int cols){
 				}	
 			}
 		}
+	}
+	for (int i=0;i<rows;i++){
+		int zero_row = 1;
+		for (int o=0;o<cols-1;o++){
+			if (matrix[i][o] != 0){
+				zero_row = 0;
+			}
+		}
+		if (zero_row && matrix[i][cols-1] != 0){
+			printf("No solutions. The matrix is inconsistent.\n");
+			return;
+		}
+	}
+	printf("--SOLUTIONS--\n");
+	char col_labels[cols-1];
+	for (int o=0;o<cols-1;o++){
+		char col_label;
+		switch(o){
+			case 0:
+				col_label='x';
+				break;
+			case 1:
+				col_label='y';
+				break;
+			case 2:
+				col_label='z';
+				break;
+			default:
+				col_label=97+(o-2);
+				break;
+		}
+		col_labels[o] = col_label;
+	}
+	for (int o=0;o<cols-1;o++){
+		printf("%c = %G", col_labels[o], matrix[o][cols-1]);
+		for (int i=o+1;i<cols-1;i++){
+			if (matrix[o][i] != 0){
+				if (matrix[o][i]<0){
+					printf(" + %.2G%c",matrix[o][i],col_labels[o]);
+				}else{
+					printf(" - %.2G%c",matrix[o][i],col_labels[o]);
+				}
+			}
+		}
+		printf("\n");
 	}
 }
 
