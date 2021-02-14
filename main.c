@@ -4,10 +4,30 @@
 #include "matrix.h"
 
 void draw_matrix(float ** matrix, int rows, int cols){
+	for (int o=0;o<cols-1;o++){
+		char col_label;
+		switch(o){
+			case 0:
+				col_label='x';
+				break;
+			case 1:
+				col_label='y';
+				break;
+			case 2:
+				col_label='z';
+				break;
+			default:
+				col_label=(97+(o-2)%26);
+				break;
+		}
+		printf("%-*c",7,col_label);
+	}
+	printf("%-*s",7,"const");
+	printf("\n");
 	for (int i=0;i<rows;i++){
 		for (int o=0;o<cols;o++){
 			if ((int)(100*matrix[i][o]) == 0){
-				printf("0.00   ");
+				printf("0      ");
 			}else{
 				printf("%-*.2f",7,matrix[i][o]);
 			}
