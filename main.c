@@ -6,7 +6,11 @@
 void draw_matrix(float ** matrix, int rows, int cols){
 	for (int i=0;i<rows;i++){
 		for (int o=0;o<cols;o++){
-			printf("%-*.2f",7,matrix[i][o]);
+			if ((int)(100*matrix[i][o]) == 0){
+				printf("0.00   ");
+			}else{
+				printf("%-*.2f",7,matrix[i][o]);
+			}
 		}
 		printf("\n");
 	}
@@ -16,34 +20,41 @@ void draw_matrix(float ** matrix, int rows, int cols){
 
 void rref_matrix(float ** matrix, int rows, int cols){
 	for (int i=0;i<rows;i++){
-		if (matrix[i][0] != 0){
-			if (i == 0){
-				break;
-			}else{
-				swap_rows(matrix, i, 0);
-				printf("R%d <-> R1\n", i+1);
-				draw_matrix(matrix, rows, cols);
-				break;
+		if (i==cols-1){
+			break;
+		}
+		if (matrix[i][i] == 0){
+			for (int z=0;z<rows;z++){
+				if (z != i){
+					if (matrix[z][i] != 0){
+						swap_rows(matrix, z, i);
+						printf("R%d <-> R%d\n", i+1, z+1);
+						draw_matrix(matrix, rows, cols);
+						break;
+					}
+				}
 			}
 		}
-	}
-	if (matrix[0][0] != 1){
-		printf("R1 / %.2f\n", matrix[0][0]);
-		normalize_row(matrix, 0, cols);
-		draw_matrix(matrix, rows, cols);
-	}
-	for (int i=1;i<rows;i++){
-		if (matrix[i][0] != 0){
-			printf("R%d - %.2f * R1\n", i+1, matrix[i][0]);
-			float buffer[cols];
-			for (int o=0;o<cols;o++){
-				buffer[o] = matrix[i][o];
-			}
-			for (int o=0;o<cols;o++){
-				matrix[i][o] -= (buffer[0]*matrix[0][o]);
-			}
+		if (matrix[i][i] != 1){
+			printf("R%d / %.2f\n", i+1, matrix[i][i]);
+			normalize_row(matrix, i, cols);
 			draw_matrix(matrix, rows, cols);
-		}	
+		}
+		for (int z=0;z<rows;z++){
+			if (z != i){
+				if (matrix[z][i] != 0){
+					printf("R%d - %.2f * R%d\n", z+1, matrix[z][i], i+1);
+					float buffer[cols];
+					for (int o=0;o<cols;o++){
+						buffer[o] = matrix[z][o];
+					}
+					for (int o=0;o<cols;o++){
+						matrix[z][o] -= (buffer[i]*matrix[i][o]);
+					}
+					draw_matrix(matrix, rows, cols);
+				}	
+			}
+		}
 	}
 }
 
