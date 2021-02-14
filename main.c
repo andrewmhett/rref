@@ -70,9 +70,9 @@ int main(){
 	printf("How many columns? ");
 	scanf("%d", &cols);
 	printf("Solving for %dx%d matrix...\n",rows,cols);
-	float ** matrix_array = malloc(rows*sizeof(int*));
+	float ** matrix_array = malloc(rows*sizeof(float*));
 	for (int i=0;i<rows;i++){
-		matrix_array[i] = malloc(cols*sizeof(int));
+		matrix_array[i] = malloc(cols*sizeof(float));
 	}
 	for (int i=0;i<rows;i++){
 		for (int o=0;o<cols;o++){
@@ -83,5 +83,6 @@ int main(){
 	printf("INITIAL MATRIX\n");
 	draw_matrix(matrix_array, rows, cols);
 	rref_matrix(matrix_array, rows, cols);
+	free(matrix_array);
 	return 0;
 }
