@@ -61,9 +61,7 @@ int main(){
 	for (int i=0;i<rows;i++){
 		for (int o=0;o<cols;o++){
 			printf("Row %d, Column %d: ",i+1,o+1);
-			char str_buffer[20];
-			scanf("%s", str_buffer);
-			matrix_array[i][o] = strtof(str_buffer, NULL);
+			scanf("%f", &matrix_array[i][o]);
 		}
 	}
 	printf("INITIAL MATRIX\n");
