@@ -8,17 +8,17 @@ void draw_matrix(float ** matrix, int rows, int cols){
 	for (int i=0;i<rows;i++){
 		for (int o=0;o<cols;o++){
 			col_widths[o]=0;
-			char str_value[10];
-			sprintf(str_value, "%f", matrix[i][o]);
-			if (strlen(str_value)>col_widths[o]){
+			char str_value[20];
+			sprintf(str_value, "%.2f", matrix[i][o]);
+			if ((int)strlen(str_value)>col_widths[o]){
 				col_widths[o]=(int)strlen(str_value);
 			}
 		}
 	}
 	for (int i=0;i<rows;i++){
 		for (int o=0;o<cols;o++){
-			char str_value[10];
-			sprintf(str_value, "%f", matrix[i][o]);
+			char str_value[20];
+			sprintf(str_value, "%.2f", matrix[i][o]);
 			printf("%.2f",matrix[i][o]);
 			for (int n=-1;n<col_widths[o]-(int)strlen(str_value);n++){
 				printf(" ");
@@ -26,6 +26,7 @@ void draw_matrix(float ** matrix, int rows, int cols){
 		}
 		printf("\n");
 	}
+	printf("--------\n");
 }
 
 
