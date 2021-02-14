@@ -17,7 +17,7 @@ void draw_matrix(float ** matrix, int rows, int cols){
 				col_label='z';
 				break;
 			default:
-				col_label=97+(o-2);
+				col_label=97+(o-3);
 				break;
 		}
 		printf("%-*c",7,col_label);
@@ -26,11 +26,7 @@ void draw_matrix(float ** matrix, int rows, int cols){
 	printf("\n");
 	for (int i=0;i<rows;i++){
 		for (int o=0;o<cols;o++){
-			if ((int)(100*matrix[i][o]) == 0){
-				printf("0      ");
-			}else{
-				printf("%-*.2G",7,matrix[i][o]);
-			}
+			printf("%-*.2G",7,matrix[i][o]);
 		}
 		printf("\n");
 	}
@@ -40,6 +36,15 @@ void draw_matrix(float ** matrix, int rows, int cols){
 
 void rref_matrix(float ** matrix, int rows, int cols){
 	for (int i=0;i<rows;i++){
+		int zero_row = 1;
+		for (int o=0;o<cols;o++){
+			if (matrix[i][o] != 0){
+				zero_row = 0;
+			}
+		}
+		if (zero_row){
+			break;
+		}
 		if (i==cols-1){
 			break;
 		}
@@ -56,7 +61,7 @@ void rref_matrix(float ** matrix, int rows, int cols){
 			}
 		}
 		if (matrix[i][i] != 1){
-			printf("R%d / %.2f\n", i+1, matrix[i][i]);
+			printf("R%d / %.2G\n", i+1, matrix[i][i]);
 			normalize_row(matrix, i, cols);
 			draw_matrix(matrix, rows, cols);
 		}
@@ -64,9 +69,9 @@ void rref_matrix(float ** matrix, int rows, int cols){
 			if (z != i){
 				if (matrix[z][i] != 0){
 					if (matrix[z][i]<0){
-						printf("R%d + %.2f * R%d\n", z+1, -1*matrix[z][i], i+1);
+						printf("R%d + %.2G * R%d\n", z+1, -1*matrix[z][i], i+1);
 					}else{
-						printf("R%d - %.2f * R%d\n", z+1, matrix[z][i], i+1);
+						printf("R%d - %.2G * R%d\n", z+1, matrix[z][i], i+1);
 					}
 					float buffer[cols];
 					for (int o=0;o<cols;o++){
@@ -107,19 +112,37 @@ void rref_matrix(float ** matrix, int rows, int cols){
 				col_label='z';
 				break;
 			default:
-				col_label=97+(o-2);
+				col_label=97+(o-3);
 				break;
 		}
 		col_labels[o] = col_label;
 	}
 	for (int o=0;o<cols-1;o++){
-		printf("%c = %G", col_labels[o], matrix[o][cols-1]);
+		int zero_row = 1;
+		for (int i=0;i<cols;i++){
+			if (matrix[o][i] != 0){
+				zero_row = 0;
+			}
+		}
+		if (zero_row){
+			printf("%c = %c", col_labels[o], col_labels[o]);
+		}else{
+			printf("%c = %G", col_labels[o], matrix[o][cols-1]);
+		}
 		for (int i=o+1;i<cols-1;i++){
 			if (matrix[o][i] != 0){
 				if (matrix[o][i]<0){
-					printf(" + %.2G%c",matrix[o][i],col_labels[o]);
+					if (matrix[o][i] == -1){
+						printf(" + %c",col_labels[i]);
+					}else{
+						printf(" + %.2G%c",-1*matrix[o][i],col_labels[i]);
+					}
 				}else{
-					printf(" - %.2G%c",matrix[o][i],col_labels[o]);
+					if (matrix[o][i] == 1){
+						printf(" - %c",col_labels[i]);
+					}else{
+						printf(" - %.2G%c",matrix[o][i],col_labels[i]);
+					}
 				}
 			}
 		}
