@@ -26,7 +26,7 @@ void draw_matrix(float ** matrix, int rows, int cols){
 	printf("\n");
 	for (int i=0;i<rows;i++){
 		for (int o=0;o<cols;o++){
-			printf("%-*.2G",7,matrix[i][o]);
+			printf("%-*.2f",7,matrix[i][o]);
 		}
 		printf("\n");
 	}
@@ -61,7 +61,7 @@ void rref_matrix(float ** matrix, int rows, int cols){
 			}
 		}
 		if (matrix[i][i] != 1){
-			printf("R%d / %.2G\n", i+1, matrix[i][i]);
+			printf("R%d / %.2f\n", i+1, matrix[i][i]);
 			normalize_row(matrix, i, cols);
 			draw_matrix(matrix, rows, cols);
 		}
@@ -69,9 +69,9 @@ void rref_matrix(float ** matrix, int rows, int cols){
 			if (z != i){
 				if (matrix[z][i] != 0){
 					if (matrix[z][i]<0){
-						printf("R%d + %.2G * R%d\n", z+1, -1*matrix[z][i], i+1);
+						printf("R%d + %.2f * R%d\n", z+1, -1*matrix[z][i], i+1);
 					}else{
-						printf("R%d - %.2G * R%d\n", z+1, matrix[z][i], i+1);
+						printf("R%d - %.2f * R%d\n", z+1, matrix[z][i], i+1);
 					}
 					float buffer[cols];
 					for (int o=0;o<cols;o++){
@@ -118,6 +118,9 @@ void rref_matrix(float ** matrix, int rows, int cols){
 		col_labels[o] = col_label;
 	}
 	for (int o=0;o<cols-1;o++){
+		if (o==rows){
+			break;
+		}
 		int zero_row = 1;
 		for (int i=0;i<cols;i++){
 			if (matrix[o][i] != 0){
@@ -130,18 +133,21 @@ void rref_matrix(float ** matrix, int rows, int cols){
 			printf("%c = %G", col_labels[o], matrix[o][cols-1]);
 		}
 		for (int i=o+1;i<cols-1;i++){
+			if (o==rows){
+				break;
+			}
 			if (matrix[o][i] != 0){
 				if (matrix[o][i]<0){
 					if (matrix[o][i] == -1){
 						printf(" + %c",col_labels[i]);
 					}else{
-						printf(" + %.2G%c",-1*matrix[o][i],col_labels[i]);
+						printf(" + %.2f%c",-1*matrix[o][i],col_labels[i]);
 					}
 				}else{
 					if (matrix[o][i] == 1){
 						printf(" - %c",col_labels[i]);
 					}else{
-						printf(" - %.2G%c",matrix[o][i],col_labels[i]);
+						printf(" - %.2f%c",matrix[o][i],col_labels[i]);
 					}
 				}
 			}
@@ -170,6 +176,9 @@ int main(){
 	printf("INITIAL MATRIX\n");
 	draw_matrix(matrix_array, rows, cols);
 	rref_matrix(matrix_array, rows, cols);
+	for (int i=0;i<rows;i++){
+		free(matrix_array[i]);
+	}
 	free(matrix_array);
 	return 0;
 }
