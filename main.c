@@ -36,6 +36,7 @@ void draw_matrix(float ** matrix, int rows, int cols){
 
 void rref_matrix(float ** matrix, int rows, int cols){
 	for (int i=0;i<rows;i++){
+		int current_col = i;
 		int zero_row = 1;
 		for (int o=0;o<cols;o++){
 			if (matrix[i][o] != 0){
@@ -49,36 +50,51 @@ void rref_matrix(float ** matrix, int rows, int cols){
 			break;
 		}
 		if (matrix[i][i] == 0){
-			for (int z=0;z<rows;z++){
+			int swapped = 0;
+			for (int z=i;z<rows;z++){
 				if (z != i){
 					if (matrix[z][i] != 0){
 						swap_rows(matrix, z, i);
+						swapped = 1;
 						printf("R%d <-> R%d\n", i+1, z+1);
 						draw_matrix(matrix, rows, cols);
 						break;
 					}
 				}
 			}
+			if (swapped == 0){
+				for (int c=i;c<cols;c++){
+					if (matrix[i][c] != 1 && matrix[i][c] != 0){
+						printf("R%d / %.2f\n", i+1, matrix[i][c]);
+						normalize_row(matrix, i, c, cols);
+						draw_matrix(matrix, rows, cols);
+						current_col=c;
+						break;
+					}
+				}
+			}
 		}
 		if (matrix[i][i] != 1){
-			printf("R%d / %.2f\n", i+1, matrix[i][i]);
-			normalize_row(matrix, i, cols);
-			draw_matrix(matrix, rows, cols);
+			if (matrix[i][i] != 0){
+				printf("R%d / %.2f\n", i+1, matrix[i][i]);
+				normalize_row(matrix, i, i, cols);
+				draw_matrix(matrix, rows, cols);
+			}
 		}
 		for (int z=0;z<rows;z++){
 			if (z != i){
-				if (matrix[z][i] != 0){
-					if (matrix[z][i]<0){
-						printf("R%d + %.2f * R%d\n", z+1, -1*matrix[z][i], i+1);
+				if (matrix[z][current_col] != 0){
+					if (matrix[z][current_col]<0){
+						printf("R%d + %.2f * R%d\n", z+1, -1*matrix[z][current_col], i+1);
 					}else{
-						printf("R%d - %.2f * R%d\n", z+1, matrix[z][i], i+1);
+						printf("R%d - %.2f * R%d\n", z+1, matrix[z][current_col], i+1);
 					}
 					float buffer[cols];
 					for (int o=0;o<cols;o++){
 						buffer[o] = matrix[z][o];
 					}
 					for (int o=0;o<cols;o++){
-						matrix[z][o] -= (buffer[i]*matrix[i][o]);
+						matrix[z][o] -= (buffer[current_col]*matrix[i][o]);
 					}
 					draw_matrix(matrix, rows, cols);
 				}	
